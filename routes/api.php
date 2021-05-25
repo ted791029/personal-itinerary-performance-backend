@@ -2,7 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\MemberController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -14,6 +14,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+Route::group(['prefix' =>'member', 'namespace' => 'App\Http\Controllers'], function(){
+    Route::get('{id}', 'MemberController@getById');
+    Route::get('/', 'MemberController@get');
+    Route::post('/register', 'MemberController@register');
 });
+
