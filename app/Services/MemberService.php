@@ -17,9 +17,9 @@ class MemberService
     /**
      * 取得所有會員
      */
-    public function get()
+    public function getList()
     {
-        $member = $this->memberRepository->get(); 
+        $member = $this->memberRepository->getList(); 
         return $member;
     }
     /**

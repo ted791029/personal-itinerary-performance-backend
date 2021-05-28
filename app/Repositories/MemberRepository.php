@@ -20,6 +20,12 @@ class MemberRepository
         $this->member = new Member();
         $this->db = DB::table('members');
     }
+
+    public function store(Request $request)
+    {
+        $member = $this->member::create($request->all());
+        return $member;
+    }
     /**
      * @return string
      *  Return the model
@@ -28,7 +34,6 @@ class MemberRepository
     {
         return $this->db->get()->first();
     }
-
      /**
      * @return string
      *  Return the model
@@ -37,7 +42,6 @@ class MemberRepository
     {
         return $this->db->get();
     }
-
     /**
      *增加 id條件
      */
@@ -45,7 +49,6 @@ class MemberRepository
     {   
         $this->db->where('id', $id);
     }
-
     /**
      * 增加 account條件 
      */

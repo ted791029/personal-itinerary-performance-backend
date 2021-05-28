@@ -16,6 +16,7 @@ use App\Http\Controllers\MemberController;
 
 Route::group(['prefix' =>'member', 'namespace' => 'App\Http\Controllers'], function(){
     Route::get('{id}', 'MemberController@getById');
+    Route::get('/isAccountExit/{account}', 'MemberController@isAccountExit');
     Route::get('/', 'MemberController@get');
     Route::post('/register', 'MemberController@register');
 });
