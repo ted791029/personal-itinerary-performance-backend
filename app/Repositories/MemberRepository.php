@@ -49,6 +49,7 @@ class MemberRepository
     {   
         $this->db->where('id', $id);
     }
+
     /**
      * 增加 account條件 
      */

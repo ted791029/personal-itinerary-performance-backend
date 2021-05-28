@@ -40,11 +40,5 @@ class MemberService
         $member = $this->memberRepository->get(); 
         return $member;
     }
-    /**
-     * 註冊會員
-     */
-    public function register(Request $request){
-        
-        return $this->memberRepository->store($request);
-    }
 }
+?>

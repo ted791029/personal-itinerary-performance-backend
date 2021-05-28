@@ -2,7 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\MemberController;
+use App\Http\Controllers\AuthController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -14,10 +14,14 @@ use App\Http\Controllers\MemberController;
 |
 */
 
-Route::group(['prefix' =>'member', 'namespace' => 'App\Http\Controllers'], function(){
+Route::group(['prefix' =>'Auth', 'namespace' => 'App\Http\Controllers'], function(){
+    Route::get('/isAccountExit/{account}', 'AuthController@isAccountExit');
+    Route::post('/register', 'AuthController@register');
+    Route::post('/sendVerificationCode', 'AuthController@sendVerificationCode');
+});
+
+Route::group(['prefix' =>'Member', 'namespace' => 'App\Http\Controllers'], function(){
     Route::get('{id}', 'MemberController@getById');
-    Route::get('/isAccountExit/{account}', 'MemberController@isAccountExit');
     Route::get('/', 'MemberController@get');
-    Route::post('/register', 'MemberController@register');
 });
 
