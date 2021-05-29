@@ -1,21 +1,29 @@
 <?php
 
 namespace App\Services;
+
 use Illuminate\Http\Request;
 use App\Repositories\MemberRepository;
 use Illuminate\Support\Facades\Log;
 use App\Repositories\VerificationCodeRepository;
 use Carbon\Carbon;
+use App\Services\MailService;
+use App\Services\MemberService;
+use App\Mail\VerificationCodeMail;
 
 class AuthService
 {
     private $memberRepository;
     private $verificationCodeRepository;
+    private $verificationCodeService;
+    private $membrService;
 
     public function __construct()
     {
         $this->memberRepository = new MemberRepository();
         $this->verificationCodeRepository = new VerificationCodeRepository();
+        $this->mailService = new MailService();
+        $this->membrService = new MemberService();
     }
     
     /**
@@ -37,6 +45,14 @@ class AuthService
 
         $verificationCode = $this->getVerificationCode($request);
         if($verificationCode == null) $verificationCode =  $this->createVerificationCode($request);
+        $member = $this->membrService->getById($request->input('memberId'));
+        if($member == null) return;
+        $email = $member->account;
+        $name = $member->name;
+        if($email == null || $name == null) return;
+        $code = $verificationCode->code;
+        if($code == null) return;
+        $this->mailService->send($email, new VerificationCodeMail($name, $code));
         return $verificationCode;
     }
     /**

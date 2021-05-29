@@ -34,7 +34,7 @@ class AuthValidator
      * 產生驗證碼驗證
      */
     public function sendVerificationCode(Request $request){
-        $inputValidate = Validator::validateInputs($request, 2);
+        $inputValidate = Validator::validateInputs($request, 1);
         if($inputValidate != null) return $inputValidate;
     }
 }
