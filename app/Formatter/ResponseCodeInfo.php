@@ -9,12 +9,12 @@ class ResponseCodeInfo{
     static public $RESPONSE_PARAM_ERROR_MSG = "傳入參數空值";
     static public $RESPONSE_PARAM_LENGTH_ERROR_CODE = "913";
     static public $RESPONSE_PARAM_LENGTH_ERROR_MSG = "傳入參數數量錯誤";
+    static public $RESPONSE_TOKEN_ERROR_CODE = "914";
+    static public $RESPONSE_TOKEN__ERROR_MSG = "無效token";
 
     //Member
-    static public $RESPONSE_MEMBER_PASSWORD_ERROR_CODE = "914";
+    static public $RESPONSE_MEMBER_PASSWORD_ERROR_CODE = "915";
     static public $RESPONSE_MEMBER_PASSWORD_ERROR_MSG = "密碼格式錯誤";
-    static public $RESPONSE_MEMBER_ISREGISTER_ERROR_CODE = "915";
+    static public $RESPONSE_MEMBER_ISREGISTER_ERROR_CODE = "916";
     static public $RESPONSE_MEMBER_ISREGISTER_ERROR_MSG = "帳號已經被註冊";
 }
-
-?>

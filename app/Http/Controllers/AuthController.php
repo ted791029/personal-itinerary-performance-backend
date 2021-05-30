@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Services\AuthService;
+use App\Services\MemberTokenService;
 use App\Validator\AuthValidator;
 use Illuminate\Support\Facades\Log;
 use App\Http\Resources\AuthResource;
@@ -17,17 +18,21 @@ class AuthController extends Controller
     private $authService;
     private $authValidator;
     private $memberService;
+    private $memberTokenService;
 
     public function __construct()
     {
         $this->authService = new AuthService();
         $this->authValidator = new AuthValidator();
         $this->memberService = new MemberService();
+        $this->memberTokenService = new MemberTokenService();
     }
 
     /**
      * 註冊
-     *
+     *@bodyParam name String 姓名
+     *@bodyParam account String 帳號(Email)
+     *@bodyParam password String 密碼
      * @param  mixed $request
      * @return void
      */
@@ -49,7 +54,7 @@ class AuthController extends Controller
     }
     /**
      * 寄出驗證碼
-     *
+     *@bodyParam memberToken String 唯一辨識碼
      * @param  mixed $request
      * @return void
      */
@@ -57,7 +62,9 @@ class AuthController extends Controller
     {
         $validate = $this->authValidator->sendVerificationCode($request);
         if($validate != null) return $validate;
-        $dataJson = new VerificationCodeResource($this->authService->sendVerificationCode($request));
+        $token = $this->memberTokenService->getToken($request->input('memberToken'));
+        if(!$token) return ResponseFormatter::jsonFormate("", ResponseCodeInfo::$RESPONSE_TOKEN_ERROR_CODE, ResponseCodeInfo::$RESPONSE_TOKEN__ERROR_MSG);
+        $dataJson = new VerificationCodeResource($this->authService->sendVerificationCode($token));
         return ResponseFormatter::jsonFormate($dataJson, ResponseCodeInfo::$RESPONSE_SUCESS_CODE, ResponseCodeInfo::$RESPONSE_SUCESS_MSG);
     }
 }

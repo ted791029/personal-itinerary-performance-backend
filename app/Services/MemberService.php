@@ -13,7 +13,17 @@ class MemberService
     {
         $this->memberRepository = new MemberRepository();
     }
-
+    
+    /**
+     * 產生會員
+     *
+     * @param  mixed $request
+     * @return void
+     */
+    public function store(Request $request)
+    {
+        return $this->memberRepository->store($request); 
+    }
     /**
      * 取得所有會員
      */

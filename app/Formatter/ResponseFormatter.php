@@ -14,4 +14,3 @@ class ResponseFormatter
         return Response()->json($tempArr);
     }
 }
-?>

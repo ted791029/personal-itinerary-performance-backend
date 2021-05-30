@@ -34,9 +34,9 @@ class VerificationCodeRepository
      * @param  mixed $verificationCodeInput
      * @return void
      */
-    public function store($verificationCodeInput)
+    public function store($inputs)
     {
-        $verificationCode = $this->verificationCode::create($verificationCodeInput);
+        $verificationCode = $this->verificationCode::create($inputs);
         return $verificationCode;
     }
 
@@ -55,4 +55,13 @@ class VerificationCodeRepository
     {   
         $this->db->where('created_at', '>', $time);
     }
+
+     /**
+     *增加 狀態條件
+     */
+    public function filterByStatus($status)
+    {   
+        $this->db->where('status', $status);
+    }
+
 }

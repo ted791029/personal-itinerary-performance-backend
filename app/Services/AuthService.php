@@ -3,27 +3,28 @@
 namespace App\Services;
 
 use Illuminate\Http\Request;
-use App\Repositories\MemberRepository;
 use Illuminate\Support\Facades\Log;
-use App\Repositories\VerificationCodeRepository;
 use Carbon\Carbon;
 use App\Services\MailService;
 use App\Services\MemberService;
+use App\Services\MemberTokenService;
+use App\Services\VerificationCodeService;
 use App\Mail\VerificationCodeMail;
+use App\Util\IdUtil;
 
 class AuthService
 {
-    private $memberRepository;
-    private $verificationCodeRepository;
     private $verificationCodeService;
     private $membrService;
+    private $memberTokenService;
+    private $mailService;
 
     public function __construct()
     {
-        $this->memberRepository = new MemberRepository();
-        $this->verificationCodeRepository = new VerificationCodeRepository();
         $this->mailService = new MailService();
         $this->membrService = new MemberService();
+        $this->memberTokenService = new MemberTokenService();
+        $this->verificationCodeService = new VerificationCodeService();
     }
     
     /**
@@ -32,7 +33,13 @@ class AuthService
     public function register(Request $request)
     {
         
-        return $this->memberRepository->store($request);
+        $member = $this->membrService->store($request);
+        $unixtime = strtotime("+1 week");
+        $expiryTime = Carbon::createFromTimeStamp($unixtime);
+        $memberToken['token'] = IdUtil::getId32();
+        $memberToken['memberId'] = $member->id;
+        $memberToken['expiryTime'] = $expiryTime;
+        return $this->memberTokenService->store($memberToken);
     }
     
     /**
@@ -41,11 +48,11 @@ class AuthService
      * @param  mixed $request
      * @return void
      */
-    public function sendVerificationCode(Request $request){
-
-        $verificationCode = $this->getVerificationCode($request);
-        if($verificationCode == null) $verificationCode =  $this->createVerificationCode($request);
-        $member = $this->membrService->getById($request->input('memberId'));
+    public function sendVerificationCode($token){
+        $memberId = $token->memberId;
+        $verificationCode = $this->verificationCodeService->getVerificationCode($memberId);
+        if($verificationCode == null) $verificationCode =  $this->verificationCodeService->createVerificationCode($memberId);
+        $member = $this->membrService->getById($memberId);
         if($member == null) return;
         $email = $member->account;
         $name = $member->name;
@@ -55,50 +62,4 @@ class AuthService
         $this->mailService->send($email, new VerificationCodeMail($name, $code));
         return $verificationCode;
     }
-    /**
-     * 創造驗證碼
-     *
-     * @param  mixed $request
-     * @return void
-     */
-    public function createVerificationCode(Request $request)
-    {
-        $memberId = $request->input('memberId');
-        $codeSize = 6;
-        $code = $this->randomkeys($codeSize);
-        $verificationCodeInput['memberId'] = $memberId;
-        $verificationCodeInput['code'] = $code;
-        return $this->verificationCodeRepository->store($verificationCodeInput);
-    }
-        
-    /**
-     * 取得驗證碼
-     *
-     * @param  mixed $request
-     * @return void
-     */
-    public function getVerificationCode(Request $request)
-    {
-        $memberId = $request->input('memberId');
-        $unixtime = strtotime("- 10 minutes");
-        $time = Carbon::createFromTimeStamp($unixtime);
-        $this->verificationCodeRepository->filterByMemberId($memberId);
-        $this->verificationCodeRepository->createdAfterTime($time);
-        return $this->verificationCodeRepository->get();
-    }
-    
-    /**
-     * 產生亂數
-     *
-     * @param  mixed $length
-     * @return void
-     */
-    private function randomkeys($length)   
-    {   
-        $output='';   
-        for ($a = 0; $a<$length; $a++) {   
-            $output .= mt_rand(0, 9);    //生成php隨機數   
-        }   
-        return $output; 
-    }  
 }

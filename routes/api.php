@@ -21,7 +21,6 @@ Route::group(['prefix' =>'Auth', 'namespace' => 'App\Http\Controllers'], functio
 });
 
 Route::group(['prefix' =>'Member', 'namespace' => 'App\Http\Controllers'], function(){
-    Route::get('{id}', 'MemberController@getById');
-    Route::get('/', 'MemberController@get');
+    Route::get('{memberToken}', 'MemberController@getByToken');
 });
 

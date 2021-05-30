@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateVerificationCodeTable extends Migration
+class CreateMemberTokensTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,12 @@ class CreateVerificationCodeTable extends Migration
      */
     public function up()
     {
-        Schema::create('verification_codes', function (Blueprint $table) {
-            $table->bigIncrements('id');
+        Schema::create('member_tokens', function (Blueprint $table) {
+            $table->char('token', 50);
+            $table->primary('token');
             $table->unsignedBigInteger('memberId');
-            $table->foreign('memberId')->references('id')->on('members');;
-            $table->char('code', 6);
-            $table->boolean('status')->default(0);
+            $table->foreign('memberId')->references('id')->on('members');
+            $table->timestamp('expiryTime');
             $table->timestamps();
         });
     }
@@ -30,6 +30,6 @@ class CreateVerificationCodeTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('verification_code');
+        Schema::dropIfExists('member_tokens');
     }
 }
