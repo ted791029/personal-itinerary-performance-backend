@@ -17,4 +17,6 @@ class ResponseCodeInfo{
     static public $RESPONSE_MEMBER_PASSWORD_ERROR_MSG = "密碼格式錯誤";
     static public $RESPONSE_MEMBER_ISREGISTER_ERROR_CODE = "916";
     static public $RESPONSE_MEMBER_ISREGISTER_ERROR_MSG = "帳號已經被註冊";
+    static public $RESPONSE_MEMBER_NOT_FOUND_ERROR_CODE = "917";
+    static public $RESPONSE_MEMBER_NOT_FOUND_ERROR_MSG = "帳號或密碼錯誤";
 }

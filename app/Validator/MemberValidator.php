@@ -16,4 +16,13 @@ class MemberValidator
     {
         $this->memberService = new MemberService();
     }
+
+    /**
+     * 產生驗證碼驗證
+     */
+    public function sendVerificationCode(Request $request){
+        $keys = ['memberToken'];
+        $inputValidate = Validator::validateInputs($request, $keys);
+        if($inputValidate != null) return $inputValidate;
+    }
 }

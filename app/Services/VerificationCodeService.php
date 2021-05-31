@@ -33,7 +33,7 @@ class VerificationCodeService
         $unixtime = strtotime("- 10 minutes");
         $time = Carbon::createFromTimeStamp($unixtime);
         $this->verificationCodeRepository->filterByMemberId($memberId);
-        $this->verificationCodeRepository->createdAfterTime($time);
+        $this->verificationCodeRepository->filterByCreated($time, '>');
         $this->verificationCodeRepository->filterByStatus(Constants::$STATUS_DISABLE);
         return $this->verificationCodeRepository->get();
     }

@@ -21,9 +21,9 @@ class MemberRepository
         $this->db = DB::table('members');
     }
 
-    public function store(Request $request)
+    public function store($inputs)
     {
-        $member = $this->member::create($request->all());
+        $member = $this->member::create($inputs);
         return $member;
     }
     /**
@@ -56,5 +56,13 @@ class MemberRepository
     public function filterByAccount($account)
     {   
         $this->db->where('account', $account);
+    }
+
+    /**
+     *增加 密碼條件
+     */
+    public function filterByPassword($password)
+    {   
+        $this->db->where('password', $password);
     }
 }

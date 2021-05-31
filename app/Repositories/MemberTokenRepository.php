@@ -49,13 +49,24 @@ class MemberTokenRepository
         $this->db->where('token', $token);
     }
 
+     /**
+     * 依照memberId篩選
+     *
+     * @param  mixed $memberId
+     * @return void
+     */
+    public function filterByMemberId($memberId){
+        $this->db->where('memberId', $memberId);
+    }
+
+
     /**
      * 依照有效期篩選
      *
      * @param  mixed $memberId
      * @return void
      */
-    public function filterByExpiryTime($time){
-        $this->db->where('expiryTime', '>' , $time);
+    public function filterByExpiryTime($time, $comparator){
+        $this->db->where('expiryTime', $comparator , $time);
     }
 }

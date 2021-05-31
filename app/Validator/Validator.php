@@ -14,11 +14,12 @@ class Validator
      * @param  mixed $length
      * @return void
      */
-    public static function validateInputs($request, $length){
+    public static function validateInputs($request, $keys){
         $inputs = $request->input();
-        if(sizeof($inputs) != $length) return ResponseFormatter::jsonFormate("", ResponseCodeInfo::$RESPONSE_PARAM_LENGTH_ERROR_CODE, ResponseCodeInfo::$RESPONSE_PARAM_LENGTH_ERROR_MSG);
-        foreach ($inputs as $key => $value) {
-            if($inputs[$key] == "") return ResponseFormatter::jsonFormate("", ResponseCodeInfo::$RESPONSE_PARAM_ERROR_CODE, ResponseCodeInfo::$RESPONSE_PARAM_ERROR_MSG);
+        if(sizeof($inputs) != sizeof($keys)) return ResponseFormatter::jsonFormate("", ResponseCodeInfo::$RESPONSE_PARAM_LENGTH_ERROR_CODE, ResponseCodeInfo::$RESPONSE_PARAM_LENGTH_ERROR_MSG);
+        for($i = 0; $i < sizeof($keys); $i++){
+            $key = $keys[$i];
+            if($request->input($key) == "") return ResponseFormatter::jsonFormate("", ResponseCodeInfo::$RESPONSE_PARAM_ERROR_CODE, ResponseCodeInfo::$RESPONSE_PARAM_ERROR_MSG);
         }
     }
 }

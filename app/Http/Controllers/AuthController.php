@@ -11,7 +11,6 @@ use App\Http\Resources\AuthResource;
 use App\Formatter\ResponseFormatter;
 use App\Formatter\ResponseCodeInfo;
 use App\Services\MemberService;
-use App\Http\Resources\VerificationCodeResource;
 
 class AuthController extends Controller
 {   
@@ -51,20 +50,25 @@ class AuthController extends Controller
         $member = $this->memberService->getByAccount($account);
         if($member == null ) return ResponseFormatter::jsonFormate("", ResponseCodeInfo::$RESPONSE_SUCESS_CODE, ResponseCodeInfo::$RESPONSE_SUCESS_MSG);
         else  return ResponseFormatter::jsonFormate("", ResponseCodeInfo::$RESPONSE_MEMBER_ISREGISTER_ERROR_CODE, ResponseCodeInfo::$RESPONSE_MEMBER_ISREGISTER_ERROR_MSG);
-    }
+    }    
     /**
-     * 寄出驗證碼
-     *@bodyParam memberToken String 唯一辨識碼
+     * login
+     *@bodyParam account String 帳號(Email)
+     *@bodyParam password String 密碼
      * @param  mixed $request
      * @return void
      */
-    public function sendVerificationCode(Request $request)
+    public function login(Request $request)
     {
-        $validate = $this->authValidator->sendVerificationCode($request);
+        $validate = $this->authValidator->login($request);
         if($validate != null) return $validate;
-        $token = $this->memberTokenService->getToken($request->input('memberToken'));
-        if(!$token) return ResponseFormatter::jsonFormate("", ResponseCodeInfo::$RESPONSE_TOKEN_ERROR_CODE, ResponseCodeInfo::$RESPONSE_TOKEN__ERROR_MSG);
-        $dataJson = new VerificationCodeResource($this->authService->sendVerificationCode($token));
-        return ResponseFormatter::jsonFormate($dataJson, ResponseCodeInfo::$RESPONSE_SUCESS_CODE, ResponseCodeInfo::$RESPONSE_SUCESS_MSG);
+        $member = $this->authService->login($request);
+        //找不到會員 帳密錯誤
+        if($member == null ) return ResponseFormatter::jsonFormate("", ResponseCodeInfo::$RESPONSE_MEMBER_NOT_FOUND_ERROR_CODE, ResponseCodeInfo::$RESPONSE_MEMBER_NOT_FOUND_ERROR_MSG);
+        $token = $this->memberTokenService->getTokenByMemberId($member->id);
+        //token 失效
+        if($token == null) $token = $this->memberTokenService->createToken($member->id);
+        $dataJson = new AuthResource($token);
+        return ResponseFormatter::jsonFormate($dataJson , ResponseCodeInfo::$RESPONSE_SUCESS_CODE, ResponseCodeInfo::$RESPONSE_SUCESS_MSG);
     }
 }

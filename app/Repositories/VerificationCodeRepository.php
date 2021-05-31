@@ -49,19 +49,18 @@ class VerificationCodeRepository
     }
 
     /**
-     *增加 創造時間 > 輸入時間
+     *增加 創造時間條件
      */
-    public function createdAfterTime($time)
+    public function filterByCreated($time, $comparator)
     {   
-        $this->db->where('created_at', '>', $time);
+        $this->db->where('created_at', $comparator, $time);
     }
 
-     /**
+    /**
      *增加 狀態條件
      */
     public function filterByStatus($status)
     {   
         $this->db->where('status', $status);
     }
-
 }

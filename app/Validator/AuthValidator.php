@@ -21,7 +21,8 @@ class AuthValidator
      * 註冊驗證
      */
     public function register(Request $request){
-        $inputValidate = Validator::validateInputs($request, 3);
+        $keys = ['name', 'account', 'password'];
+        $inputValidate = Validator::validateInputs($request, $keys);
         if($inputValidate != null) return $inputValidate;
         $account = $request->input('account');
         $password = $request->input('password');
@@ -31,10 +32,11 @@ class AuthValidator
         if($member != null) return ResponseFormatter::jsonFormate("", ResponseCodeInfo::$RESPONSE_MEMBER_ISREGISTER_ERROR_CODE, ResponseCodeInfo::$RESPONSE_MEMBER_ISREGISTER_ERROR_MSG);;
     }
     /**
-     * 產生驗證碼驗證
-     */
-    public function sendVerificationCode(Request $request){
-        $inputValidate = Validator::validateInputs($request, 1);
+     * 登入驗證
+    */
+    public function login(Request $request){
+        $keys = ['account', 'password'];
+        $inputValidate = Validator::validateInputs($request, $keys);
         if($inputValidate != null) return $inputValidate;
     }
 }

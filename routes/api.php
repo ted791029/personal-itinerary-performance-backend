@@ -17,10 +17,11 @@ use App\Http\Controllers\AuthController;
 Route::group(['prefix' =>'Auth', 'namespace' => 'App\Http\Controllers'], function(){
     Route::get('/isAccountExit/{account}', 'AuthController@isAccountExit');
     Route::post('/register', 'AuthController@register');
-    Route::post('/sendVerificationCode', 'AuthController@sendVerificationCode');
+    Route::post('/login', 'AuthController@login');
 });
 
 Route::group(['prefix' =>'Member', 'namespace' => 'App\Http\Controllers'], function(){
+    Route::post('/sendVerificationCode', 'MemberController@sendVerificationCode');
     Route::get('{memberToken}', 'MemberController@getByToken');
 });
 
