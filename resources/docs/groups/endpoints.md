@@ -10,14 +10,14 @@
 
 ```bash
 curl -X GET \
-    -G "http://127.0.0.1:8000/api/Auth/isAccountExit/sint" \
+    -G "http://127.0.0.1:8000/api/Auth/isAccountExit/in" \
     -H "Content-Type: application/json" \
     -H "Accept: application/json"
 ```
 
 ```javascript
 const url = new URL(
-    "http://127.0.0.1:8000/api/Auth/isAccountExit/sint"
+    "http://127.0.0.1:8000/api/Auth/isAccountExit/in"
 );
 
 let headers = {
@@ -83,7 +83,7 @@ curl -X POST \
     "http://127.0.0.1:8000/api/Auth/register" \
     -H "Content-Type: application/json" \
     -H "Accept: application/json" \
-    -d '{"name":"recusandae","account":"ipsum","password":"optio"}'
+    -d '{"name":"sunt","account":"sequi","password":"corporis"}'
 
 ```
 
@@ -98,9 +98,9 @@ let headers = {
 };
 
 let body = {
-    "name": "recusandae",
-    "account": "ipsum",
-    "password": "optio"
+    "name": "sunt",
+    "account": "sequi",
+    "password": "corporis"
 }
 
 fetch(url, {
@@ -153,7 +153,7 @@ fetch(url, {
 </form>
 
 
-## 寄出驗證碼
+## 登入
 
 
 
@@ -162,16 +162,16 @@ fetch(url, {
 
 ```bash
 curl -X POST \
-    "http://127.0.0.1:8000/api/Auth/sendVerificationCode" \
+    "http://127.0.0.1:8000/api/Auth/login" \
     -H "Content-Type: application/json" \
     -H "Accept: application/json" \
-    -d '{"memberToken":"aut"}'
+    -d '{"account":"error","password":"iusto"}'
 
 ```
 
 ```javascript
 const url = new URL(
-    "http://127.0.0.1:8000/api/Auth/sendVerificationCode"
+    "http://127.0.0.1:8000/api/Auth/login"
 );
 
 let headers = {
@@ -180,7 +180,8 @@ let headers = {
 };
 
 let body = {
-    "memberToken": "aut"
+    "account": "error",
+    "password": "iusto"
 }
 
 fetch(url, {
@@ -191,29 +192,103 @@ fetch(url, {
 ```
 
 
-<div id="execution-results-POSTapi-Auth-sendVerificationCode" hidden>
-    <blockquote>Received response<span id="execution-response-status-POSTapi-Auth-sendVerificationCode"></span>:</blockquote>
-    <pre class="json"><code id="execution-response-content-POSTapi-Auth-sendVerificationCode"></code></pre>
+<div id="execution-results-POSTapi-Auth-login" hidden>
+    <blockquote>Received response<span id="execution-response-status-POSTapi-Auth-login"></span>:</blockquote>
+    <pre class="json"><code id="execution-response-content-POSTapi-Auth-login"></code></pre>
 </div>
-<div id="execution-error-POSTapi-Auth-sendVerificationCode" hidden>
+<div id="execution-error-POSTapi-Auth-login" hidden>
     <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-POSTapi-Auth-sendVerificationCode"></code></pre>
+    <pre><code id="execution-error-message-POSTapi-Auth-login"></code></pre>
 </div>
-<form id="form-POSTapi-Auth-sendVerificationCode" data-method="POST" data-path="api/Auth/sendVerificationCode" data-authed="0" data-hasfiles="0" data-headers='{"Content-Type":"application\/json","Accept":"application\/json"}' onsubmit="event.preventDefault(); executeTryOut('POSTapi-Auth-sendVerificationCode', this);">
+<form id="form-POSTapi-Auth-login" data-method="POST" data-path="api/Auth/login" data-authed="0" data-hasfiles="0" data-headers='{"Content-Type":"application\/json","Accept":"application\/json"}' onsubmit="event.preventDefault(); executeTryOut('POSTapi-Auth-login', this);">
 <h3>
     Request&nbsp;&nbsp;&nbsp;
-        <button type="button" style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;" id="btn-tryout-POSTapi-Auth-sendVerificationCode" onclick="tryItOut('POSTapi-Auth-sendVerificationCode');">Try it out ⚡</button>
-    <button type="button" style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;" id="btn-canceltryout-POSTapi-Auth-sendVerificationCode" onclick="cancelTryOut('POSTapi-Auth-sendVerificationCode');" hidden>Cancel</button>&nbsp;&nbsp;
-    <button type="submit" style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;" id="btn-executetryout-POSTapi-Auth-sendVerificationCode" hidden>Send Request 💥</button>
+        <button type="button" style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;" id="btn-tryout-POSTapi-Auth-login" onclick="tryItOut('POSTapi-Auth-login');">Try it out ⚡</button>
+    <button type="button" style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;" id="btn-canceltryout-POSTapi-Auth-login" onclick="cancelTryOut('POSTapi-Auth-login');" hidden>Cancel</button>&nbsp;&nbsp;
+    <button type="submit" style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;" id="btn-executetryout-POSTapi-Auth-login" hidden>Send Request 💥</button>
     </h3>
 <p>
 <small class="badge badge-black">POST</small>
- <b><code>api/Auth/sendVerificationCode</code></b>
+ <b><code>api/Auth/login</code></b>
+</p>
+<h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+<p>
+<b><code>account</code></b>&nbsp;&nbsp;<small>String</small>     <i>optional</i> &nbsp;
+<input type="text" name="account" data-endpoint="POSTapi-Auth-login" data-component="body"  hidden>
+<br>
+帳號(Email)
+</p>
+<p>
+<b><code>password</code></b>&nbsp;&nbsp;<small>String</small>     <i>optional</i> &nbsp;
+<input type="password" name="password" data-endpoint="POSTapi-Auth-login" data-component="body"  hidden>
+<br>
+密碼
+</p>
+
+</form>
+
+
+## 寄出驗證碼
+
+
+
+
+> Example request:
+
+```bash
+curl -X POST \
+    "http://127.0.0.1:8000/api/Member/sendVerificationCode" \
+    -H "Content-Type: application/json" \
+    -H "Accept: application/json" \
+    -d '{"memberToken":"id"}'
+
+```
+
+```javascript
+const url = new URL(
+    "http://127.0.0.1:8000/api/Member/sendVerificationCode"
+);
+
+let headers = {
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+let body = {
+    "memberToken": "id"
+}
+
+fetch(url, {
+    method: "POST",
+    headers,
+    body: JSON.stringify(body),
+}).then(response => response.json());
+```
+
+
+<div id="execution-results-POSTapi-Member-sendVerificationCode" hidden>
+    <blockquote>Received response<span id="execution-response-status-POSTapi-Member-sendVerificationCode"></span>:</blockquote>
+    <pre class="json"><code id="execution-response-content-POSTapi-Member-sendVerificationCode"></code></pre>
+</div>
+<div id="execution-error-POSTapi-Member-sendVerificationCode" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-POSTapi-Member-sendVerificationCode"></code></pre>
+</div>
+<form id="form-POSTapi-Member-sendVerificationCode" data-method="POST" data-path="api/Member/sendVerificationCode" data-authed="0" data-hasfiles="0" data-headers='{"Content-Type":"application\/json","Accept":"application\/json"}' onsubmit="event.preventDefault(); executeTryOut('POSTapi-Member-sendVerificationCode', this);">
+<h3>
+    Request&nbsp;&nbsp;&nbsp;
+        <button type="button" style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;" id="btn-tryout-POSTapi-Member-sendVerificationCode" onclick="tryItOut('POSTapi-Member-sendVerificationCode');">Try it out ⚡</button>
+    <button type="button" style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;" id="btn-canceltryout-POSTapi-Member-sendVerificationCode" onclick="cancelTryOut('POSTapi-Member-sendVerificationCode');" hidden>Cancel</button>&nbsp;&nbsp;
+    <button type="submit" style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;" id="btn-executetryout-POSTapi-Member-sendVerificationCode" hidden>Send Request 💥</button>
+    </h3>
+<p>
+<small class="badge badge-black">POST</small>
+ <b><code>api/Member/sendVerificationCode</code></b>
 </p>
 <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
 <p>
 <b><code>memberToken</code></b>&nbsp;&nbsp;<small>String</small>     <i>optional</i> &nbsp;
-<input type="text" name="memberToken" data-endpoint="POSTapi-Auth-sendVerificationCode" data-component="body"  hidden>
+<input type="text" name="memberToken" data-endpoint="POSTapi-Member-sendVerificationCode" data-component="body"  hidden>
 <br>
 唯一辨識碼
 </p>
@@ -230,14 +305,14 @@ fetch(url, {
 
 ```bash
 curl -X GET \
-    -G "http://127.0.0.1:8000/api/Member/non" \
+    -G "http://127.0.0.1:8000/api/Member/sunt" \
     -H "Content-Type: application/json" \
     -H "Accept: application/json"
 ```
 
 ```javascript
 const url = new URL(
-    "http://127.0.0.1:8000/api/Member/non"
+    "http://127.0.0.1:8000/api/Member/sunt"
 );
 
 let headers = {
@@ -439,7 +514,7 @@ fetch(url, {
                     </div>
 
                     <div class="ml-4 text-center text-sm text-gray-500 sm:text-right sm:ml-0">
-                        Laravel v8.44.0 (PHP v7.3.28-1+ubuntu20.04.1+deb.sury.org+1)
+                        Laravel v8.44.0 (PHP v8.0.3)
                     </div>
                 </div>
             </div>

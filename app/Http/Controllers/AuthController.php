@@ -52,7 +52,7 @@ class AuthController extends Controller
         else  return ResponseFormatter::jsonFormate("", ResponseCodeInfo::$RESPONSE_MEMBER_ISREGISTER_ERROR_CODE, ResponseCodeInfo::$RESPONSE_MEMBER_ISREGISTER_ERROR_MSG);
     }    
     /**
-     * login
+     * 登入
      *@bodyParam account String 帳號(Email)
      *@bodyParam password String 密碼
      * @param  mixed $request
