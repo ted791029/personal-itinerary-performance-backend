@@ -6,6 +6,7 @@ namespace App\Repositories;
 use App\Models\Member;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 /**
  * Class MemberRepository.
@@ -20,7 +21,13 @@ class MemberRepository
         $this->member = new Member();
         $this->db = DB::table('members');
     }
-
+    
+    /**
+     * store
+     *
+     * @param  mixed $inputs
+     * @return void
+     */
     public function store($inputs)
     {
         $member = $this->member::create($inputs);
@@ -41,6 +48,22 @@ class MemberRepository
     public function getList()
     {
         return $this->db->get();
+    }    
+    /**
+     * upate
+     *
+     * @param  mixed $inputs
+     * @return void
+     */
+    public function upate($member){
+        $unixtime = time();
+        $now = Carbon::createFromTimeStamp($unixtime);
+        $arr = [
+            'name' => $member->name,
+            'updated_at' => $now,
+            'verifyStatus' => $member->verifyStatus
+        ]; 
+        return $this->db->where('id', $member->id)->update($arr);
     }
     /**
      *增加 id條件

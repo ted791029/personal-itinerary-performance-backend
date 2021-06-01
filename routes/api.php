@@ -21,7 +21,8 @@ Route::group(['prefix' =>'Auth', 'namespace' => 'App\Http\Controllers'], functio
 });
 
 Route::group(['prefix' =>'Member', 'namespace' => 'App\Http\Controllers'], function(){
-    Route::post('/sendVerificationCode', 'MemberController@sendVerificationCode');
     Route::get('{memberToken}', 'MemberController@getByToken');
+    Route::post('/sendVerificationCode', 'MemberController@sendVerificationCode');
+    Route::post('/verify', 'MemberController@verify');
 });
 

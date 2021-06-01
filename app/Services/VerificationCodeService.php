@@ -13,16 +13,7 @@ class VerificationCodeService
     public function __construct()
     {
         $this->verificationCodeRepository = new VerificationCodeRepository();
-    }
-    
-    /**
-     * @return string
-     *  Return the model
-     */
-    public function get()
-    {
-        return $this->db->get()->first();
-    }      
+    }     
     /**
      * 取得驗證碼
      * @param  mixed $request
@@ -33,6 +24,21 @@ class VerificationCodeService
         $unixtime = strtotime("- 10 minutes");
         $time = Carbon::createFromTimeStamp($unixtime);
         $this->verificationCodeRepository->filterByMemberId($memberId);
+        $this->verificationCodeRepository->filterByCreated($time, '>');
+        $this->verificationCodeRepository->filterByStatus(Constants::$STATUS_DISABLE);
+        return $this->verificationCodeRepository->get();
+    }
+    /**
+     * 取得驗證碼
+     * @param  mixed $request
+     * @return void
+     */
+    public function getVerificationCodeByCode($memberId, $code)
+    {
+        $unixtime = strtotime("- 10 minutes");
+        $time = Carbon::createFromTimeStamp($unixtime);
+        $this->verificationCodeRepository->filterByMemberId($memberId);
+        $this->verificationCodeRepository->filterByCode($code);
         $this->verificationCodeRepository->filterByCreated($time, '>');
         $this->verificationCodeRepository->filterByStatus(Constants::$STATUS_DISABLE);
         return $this->verificationCodeRepository->get();
@@ -50,6 +56,15 @@ class VerificationCodeService
         $verificationCodeInput['memberId'] = $memberId;
         $verificationCodeInput['code'] = $code;
         return $this->verificationCodeRepository->store($verificationCodeInput);
+    }    
+    /**
+     * update
+     *
+     * @param  mixed $verificationCode
+     * @return void
+     */
+    public function update($verificationCode){
+        return $this->verificationCodeRepository->update($verificationCode);
     }
     /**
      * 產生亂數

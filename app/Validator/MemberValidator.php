@@ -25,4 +25,10 @@ class MemberValidator
         $inputValidate = Validator::validateInputs($request, $keys);
         if($inputValidate != null) return $inputValidate;
     }
+
+    public function verify(Request $request){
+        $keys = ['memberToken', 'verificationCode'];
+        $inputValidate = Validator::validateInputs($request, $keys);
+        if($inputValidate != null) return $inputValidate;
+    }
 }

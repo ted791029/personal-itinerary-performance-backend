@@ -8,6 +8,7 @@ use App\Services\VerificationCodeService;
 use App\Mail\VerificationCodeMail;
 use App\Services\MailService;
 use Illuminate\Support\Facades\Hash;
+use App\Formatter\Constants;
 
 class MemberService
 {
@@ -61,15 +62,13 @@ class MemberService
         $member = $this->memberRepository->get(); 
         return $member;
     }
-
     /**
      * 寄出驗證碼
      *
      * @param  mixed $request
      * @return void
      */
-    public function sendVerificationCode($token){
-        $memberId = $token->memberId;
+    public function sendVerificationCode($memberId){
         $verificationCode = $this->verificationCodeService->getVerificationCode($memberId);
         if($verificationCode == null) $verificationCode =  $this->verificationCodeService->createVerificationCode($memberId);
         $member = $this->getById($memberId);
@@ -82,7 +81,6 @@ class MemberService
         $this->mailService->send($email, new VerificationCodeMail($name, $code));
         return $verificationCode;
     }
-
     /**
      * 登入
      *
@@ -92,10 +90,29 @@ class MemberService
     public function login($account, $password){   
         $this->memberRepository->filterByAccount($account);
         $member =$this->memberRepository->get();
+        if($member == null) return null;
         //檢查資料庫與目前密碼加密後是否相同
         $booleanValue = Hash::check($password,$member->password);
         if($booleanValue) return $member;
         else return null;
+    } 
+    /**
+     * 驗證
+     *
+     * @param  mixed $memberId
+     * @param  mixed $verificationCode
+     * @return void
+     */
+    public function verify($memberId, $verificationCode){
+        $verificationCode = $this->verificationCodeService->getVerificationCodeByCode($memberId, $verificationCode);
+        if($verificationCode == null)  return null;
+        $verificationCode->status = Constants :: $STATUS_ENABLE;
+        $this->verificationCodeService->update($verificationCode);
+        $member = $this->getById($memberId);
+        if($member->verifyStatus == Constants :: $STATUS_ENABLE) return null;
+        $member->verifyStatus = Constants :: $STATUS_ENABLE;
+        $this->memberRepository->upate($member);
+        return $member;
     }
 }
 ?>

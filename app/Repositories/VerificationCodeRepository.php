@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 //use Your Model
 use App\Models\VerificationCode;
@@ -38,8 +39,22 @@ class VerificationCodeRepository
     {
         $verificationCode = $this->verificationCode::create($inputs);
         return $verificationCode;
+    }    
+    /**
+     * update
+     *
+     * @param  mixed $verificationCode
+     * @return void
+     */
+    public function update($verificationCode){
+        $unixtime = time();
+        $now = Carbon::createFromTimeStamp($unixtime);
+        $arr = [
+            'status' => $verificationCode->status,
+            'updated_at' => $now
+        ]; 
+        return $this->db->where('id', $verificationCode->id)->update($arr);
     }
-
    /**
      *增加 memebriId條件
      */
@@ -62,5 +77,12 @@ class VerificationCodeRepository
     public function filterByStatus($status)
     {   
         $this->db->where('status', $status);
+    }
+    /**
+     *增加 驗證碼條件
+     */
+    public function filterByCode($code)
+    {   
+        $this->db->where('code', $code);
     }
 }

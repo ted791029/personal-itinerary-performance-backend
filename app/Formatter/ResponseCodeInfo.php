@@ -19,4 +19,6 @@ class ResponseCodeInfo{
     static public $RESPONSE_MEMBER_ISREGISTER_ERROR_MSG = "帳號已經被註冊";
     static public $RESPONSE_MEMBER_NOT_FOUND_ERROR_CODE = "917";
     static public $RESPONSE_MEMBER_NOT_FOUND_ERROR_MSG = "帳號或密碼錯誤";
+    static public $RESPONSE_MEMBER_VERIFY_ERROR_CODE = "918";
+    static public $RESPONSE_MEMBER_VERIFY_ERROR_MSG = "無效驗證碼";
 }

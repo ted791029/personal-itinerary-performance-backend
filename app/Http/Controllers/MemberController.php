@@ -25,7 +25,7 @@ class MemberController extends Controller
     }
     
     /**
-     * 依照id 取得會員
+     * 依照token 取得會員
      *
      * @param  mixed $id
      * @return void
@@ -50,7 +50,26 @@ class MemberController extends Controller
         if($validate != null) return $validate;
         $token = $this->memberTokenService->getToken($request->input('memberToken'));
         if(!$token) return ResponseFormatter::jsonFormate("", ResponseCodeInfo::$RESPONSE_TOKEN_ERROR_CODE, ResponseCodeInfo::$RESPONSE_TOKEN__ERROR_MSG);
-        $dataJson = new VerificationCodeResource($this->memberService->sendVerificationCode($token));
+        $dataJson = new VerificationCodeResource($this->memberService->sendVerificationCode($token->memberId));
+        return ResponseFormatter::jsonFormate($dataJson, ResponseCodeInfo::$RESPONSE_SUCESS_CODE, ResponseCodeInfo::$RESPONSE_SUCESS_MSG);
+    }
+    
+    /**
+     * 驗證
+     *@bodyParam memberToken String 唯一辨識碼
+     *@bodyParam verificationCode String 驗證碼ㄋ
+     * @param  mixed $request
+     * @return void
+     */
+    public function verify(Request $request)
+    {
+        $validate = $this->memberValidator->verify($request);
+        if($validate != null) return $validate;
+        $token = $this->memberTokenService->getToken($request->input('memberToken'));
+        if(!$token) return ResponseFormatter::jsonFormate("", ResponseCodeInfo::$RESPONSE_TOKEN_ERROR_CODE, ResponseCodeInfo::$RESPONSE_TOKEN__ERROR_MSG);
+        $member = $this->memberService->verify($token->memberId, $request->input('verificationCode'));
+        if($member == null) return ResponseFormatter::jsonFormate("", ResponseCodeInfo::$RESPONSE_MEMBER_VERIFY_ERROR_CODE, ResponseCodeInfo::$RESPONSE_MEMBER_VERIFY_ERROR_MSG);
+        $dataJson = new MmeberResource($member);
         return ResponseFormatter::jsonFormate($dataJson, ResponseCodeInfo::$RESPONSE_SUCESS_CODE, ResponseCodeInfo::$RESPONSE_SUCESS_MSG);
     }
 }
