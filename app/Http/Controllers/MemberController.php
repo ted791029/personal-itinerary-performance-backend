@@ -55,9 +55,9 @@ class MemberController extends Controller
     }
     
     /**
-     * 驗證
+     *驗證
      *@bodyParam memberToken String 唯一辨識碼
-     *@bodyParam verificationCode String 驗證碼ㄋ
+     *@bodyParam verificationCode String 驗證碼
      * @param  mixed $request
      * @return void
      */
