@@ -14,7 +14,7 @@ class Validator
      * @param  mixed $length
      * @return void
      */
-    public static function validateInputs($request, $keys){
+    protected function validateInputs($request, $keys){
         $inputs = $request->input();
         if(sizeof($inputs) != sizeof($keys)) return ResponseFormatter::jsonFormate("", ResponseCodeInfo::$RESPONSE_PARAM_LENGTH_ERROR_CODE, ResponseCodeInfo::$RESPONSE_PARAM_LENGTH_ERROR_MSG);
         for($i = 0; $i < sizeof($keys); $i++){

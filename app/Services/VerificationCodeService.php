@@ -10,9 +10,11 @@ class VerificationCodeService
 {
     private $verificationCodeRepository;
 
-    public function __construct()
+    public function __construct(
+        VerificationCodeRepository $verificationCodeRepository
+    )
     {
-        $this->verificationCodeRepository = new VerificationCodeRepository();
+        $this->verificationCodeRepository = $verificationCodeRepository;
     }     
     /**
      * 取得驗證碼

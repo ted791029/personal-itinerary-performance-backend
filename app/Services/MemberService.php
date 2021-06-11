@@ -16,11 +16,15 @@ class MemberService
     private $verificationCodeService;
     private $mailService;
 
-    public function __construct()
+    public function __construct(
+        MemberRepository $memberRepository,
+        VerificationCodeService $verificationCodeService,
+        MailService $mailService
+    )
     {
-        $this->memberRepository = new MemberRepository();
-        $this->verificationCodeService = new VerificationCodeService();
-        $this->mailService = new MailService();
+        $this->memberRepository = $memberRepository;
+        $this->verificationCodeService = $verificationCodeService;
+        $this->mailService = $mailService;
     }
     
     /**

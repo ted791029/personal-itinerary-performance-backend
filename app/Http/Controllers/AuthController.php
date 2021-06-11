@@ -10,21 +10,22 @@ use Illuminate\Support\Facades\Log;
 use App\Http\Resources\AuthResource;
 use App\Formatter\ResponseFormatter;
 use App\Formatter\ResponseCodeInfo;
-use App\Services\MemberService;
 
 class AuthController extends Controller
 {   
     private $authService;
     private $authValidator;
-    private $memberService;
     private $memberTokenService;
 
-    public function __construct()
+    public function __construct(
+        AuthService $authService,
+        AuthValidator $authValidator,
+        MemberTokenService $memberTokenService
+    )
     {
-        $this->authService = new AuthService();
-        $this->authValidator = new AuthValidator();
-        $this->memberService = new MemberService();
-        $this->memberTokenService = new MemberTokenService();
+        $this->authService = $authService;
+        $this->authValidator = $authValidator;
+        $this->memberTokenService = $memberTokenService;
     }
 
     /**
@@ -47,7 +48,7 @@ class AuthController extends Controller
      */
     public function isAccountExit($account)
     {
-        $member = $this->memberService->getByAccount($account);
+        $member = $this->authService->isAccountExit($account);
         if($member == null ) return ResponseFormatter::jsonFormate("", ResponseCodeInfo::$RESPONSE_SUCESS_CODE, ResponseCodeInfo::$RESPONSE_SUCESS_MSG);
         else  return ResponseFormatter::jsonFormate("", ResponseCodeInfo::$RESPONSE_MEMBER_ISREGISTER_ERROR_CODE, ResponseCodeInfo::$RESPONSE_MEMBER_ISREGISTER_ERROR_MSG);
     }    

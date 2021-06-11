@@ -14,9 +14,11 @@ class VerificationCodeRepository
     private $verificationCode;
     private $db;
 
-    public function __construct()
+    public function __construct(
+        VerificationCode $verificationCode
+    )
     {
-        $this->verificationCode = new VerificationCode();
+        $this->verificationCode = $verificationCode;
         $this->db = DB::table('verification_codes');
     }
 

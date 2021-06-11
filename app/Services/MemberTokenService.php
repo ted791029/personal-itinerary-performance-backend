@@ -10,9 +10,11 @@ class MemberTokenService
 {
     private $memberTokenRepository;
 
-    public function __construct()
+    public function __construct(
+        MemberTokenRepository $memberTokenRepository
+    )
     {
-        $this->memberTokenRepository = new MemberTokenRepository();
+        $this->memberTokenRepository = $memberTokenRepository;
     }
 
     /**

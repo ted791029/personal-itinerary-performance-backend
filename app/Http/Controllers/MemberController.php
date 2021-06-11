@@ -17,11 +17,11 @@ class MemberController extends Controller
     private $memberTokenService;
     private $memberValidator;
 
-    public function __construct()
+    public function __construct(MemberService $memberService, MemberTokenService $memberTokenService, MemberValidator $memberValidator)
     {
-        $this->memberService = new MemberService();
-        $this->memberTokenService = new MemberTokenService();
-        $this->memberValidator = new MemberValidator();
+        $this->memberService = $memberService;
+        $this->memberTokenService = $memberTokenService;
+        $this->memberValidator = $memberValidator;
     }
     
     /**

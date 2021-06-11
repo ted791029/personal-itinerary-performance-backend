@@ -15,9 +15,11 @@ class MemberTokenRepository
     private $memberToken;
     private $db;
 
-    public function __construct()
+    public function __construct(
+        MemberToken $memberToken
+    )
     {
-        $this->memberToken = new MemberToken();
+        $this->memberToken = $memberToken;
         $this->db = DB::table('member_tokens');
     }
 

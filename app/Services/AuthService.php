@@ -10,13 +10,17 @@ use App\Services\MemberTokenService;
 
 class AuthService
 {
-    private $membrService;
+    private $memberService;
     private $memberTokenService;
 
-    public function __construct()
+
+    public function __construct(
+        MemberService $memberService, 
+        MemberTokenService $memberTokenService
+    )
     {
-        $this->membrService = new MemberService();
-        $this->memberTokenService = new MemberTokenService();
+        $this->memberService = $memberService;
+        $this->memberTokenService = $memberTokenService;
     }
     
     /**
@@ -24,16 +28,23 @@ class AuthService
      */
     public function register(Request $request)
     {      
-        $member = $this->membrService->store($request);
+        $member = $this->memberService->store($request);
         return $this->memberTokenService->createToken($member->id);
     }
-
     /**
      * 登入
      */
     public function login(Request $request)
     {
-        $member = $this->membrService->login($request->input('account'), $request->input('password'));
+        $member = $this->memberService->login($request->input('account'), $request->input('password'));
         return $member;
     }
+    /**
+     * 檢查是否註冊
+     */
+    public function isAccountExit($account)
+    {
+        return $this->memberService->getByAccount($account);
+        
+    }    
 }

@@ -16,9 +16,11 @@ class MemberRepository
     private $member;
     private $db;
 
-    public function __construct()
+    public function __construct(
+        Member $member
+    )
     {
-        $this->member = new Member();
+        $this->member = $member;
         $this->db = DB::table('members');
     }
     

@@ -8,21 +8,24 @@ use App\Formatter\ResponseFormatter;
 use App\Formatter\ResponseCodeInfo;
 use App\Validator\Validator;
 
-class AuthValidator
+class AuthValidator extends Validator 
 {
     private $memberService;
 
-    public function __construct()
-    {
-        $this->memberService = new MemberService();
-    }
 
+    public function __construct(
+        MemberService $memberService
+    )
+    {
+        $this->memberService = $memberService;
+    }
+    
     /**
      * 註冊驗證
      */
     public function register(Request $request){
         $keys = ['name', 'account', 'password'];
-        $inputValidate = Validator::validateInputs($request, $keys);
+        $inputValidate = parent::validateInputs($request, $keys);
         if($inputValidate != null) return $inputValidate;
         $account = $request->input('account');
         $password = $request->input('password');
@@ -36,7 +39,7 @@ class AuthValidator
     */
     public function login(Request $request){
         $keys = ['account', 'password'];
-        $inputValidate = Validator::validateInputs($request, $keys);
+        $inputValidate = parent::validateInputs($request, $keys);
         if($inputValidate != null) return $inputValidate;
     }
 }

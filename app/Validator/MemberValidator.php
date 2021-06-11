@@ -8,27 +8,37 @@ use App\Formatter\ResponseFormatter;
 use App\Formatter\ResponseCodeInfo;
 use App\Validator\Validator;
 
-class MemberValidator
+class MemberValidator extends Validator
 {
     private $memberService;
 
-    public function __construct()
+    public function __construct(
+        MemberService $memberService
+    )
     {
-        $this->memberService = new MemberService();
+        $this->memberService = $memberService;
     }
 
     /**
-     * 產生驗證碼驗證
+     * 寄出驗證碼
+     *
+     * @param  mixed $request
+     * @return void
      */
     public function sendVerificationCode(Request $request){
         $keys = ['memberToken'];
-        $inputValidate = Validator::validateInputs($request, $keys);
+        $inputValidate = parent::validateInputs($request, $keys);
         if($inputValidate != null) return $inputValidate;
-    }
-
+    }    
+    /**
+     * 驗證
+     *
+     * @param  mixed $request
+     * @return void
+     */
     public function verify(Request $request){
         $keys = ['memberToken', 'verificationCode'];
-        $inputValidate = Validator::validateInputs($request, $keys);
+        $inputValidate = parent::validateInputs($request, $keys);
         if($inputValidate != null) return $inputValidate;
     }
 }
