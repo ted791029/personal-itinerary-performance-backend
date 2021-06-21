@@ -32,7 +32,7 @@ class AuthValidator extends Validator
         $reg = "/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/";
         if(!(preg_match( $reg, $password))) return ResponseFormatter::jsonFormate("", ResponseCodeInfo::$RESPONSE_MEMBER_PASSWORD_ERROR_CODE, ResponseCodeInfo::$RESPONSE_MEMBER_PASSWORD_ERROR_MSG);
         $member = $this->memberService->getByAccount($account);
-        if($member != null) return ResponseFormatter::jsonFormate("", ResponseCodeInfo::$RESPONSE_MEMBER_ISREGISTER_ERROR_CODE, ResponseCodeInfo::$RESPONSE_MEMBER_ISREGISTER_ERROR_MSG);;
+        if($member != null) return ResponseFormatter::jsonFormate("", ResponseCodeInfo::$RESPONSE_MEMBER_ISREGISTER_ERROR_CODE, ResponseCodeInfo::$RESPONSE_MEMBER_ISREGISTER_ERROR_MSG);
     }
     /**
      * 登入驗證

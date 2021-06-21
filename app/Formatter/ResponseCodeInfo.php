@@ -21,4 +21,8 @@ class ResponseCodeInfo{
     static public $RESPONSE_MEMBER_NOT_FOUND_ERROR_MSG = "帳號或密碼錯誤";
     static public $RESPONSE_MEMBER_VERIFY_ERROR_CODE = "918";
     static public $RESPONSE_MEMBER_VERIFY_ERROR_MSG = "無效驗證碼";
+    static public $RESPONSE_MEMBER_NOT_FIND_ERROR_CODE = "919";
+    static public $RESPONSE_MEMBER_NOT_FIND_ERROR_MSG = "無會員";
+    static public $RESPONSE_MEMBER_NOT_FAILED_SEND_VERIFICATION_CODE_CODE = "920";
+    static public $RESPONSE_MEMBER_NOT_FAILED_SEND_VERIFICATION_CODE_MSG = "無法寄出驗證信";
 }

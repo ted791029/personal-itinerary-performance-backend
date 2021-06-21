@@ -74,14 +74,14 @@ class MemberService
      */
     public function sendVerificationCode($memberId){
         $verificationCode = $this->verificationCodeService->getVerificationCode($memberId);
-        if($verificationCode == null) $verificationCode =  $this->verificationCodeService->createVerificationCode($memberId);
+        if(!$verificationCode) $verificationCode =  $this->verificationCodeService->createVerificationCode($memberId);
         $member = $this->getById($memberId);
-        if($member == null) return;
+        if(!$member) return;
         $email = $member->account;
         $name = $member->name;
-        if($email == null || $name == null) return;
+        if(!$email|| !$name) return;
         $code = $verificationCode->code;
-        if($code == null) return;
+        if(!$code) return;
         $this->mailService->send($email, new VerificationCodeMail($name, $code));
         return $verificationCode;
     }
@@ -94,11 +94,11 @@ class MemberService
     public function login($account, $password){   
         $this->memberRepository->filterByAccount($account);
         $member =$this->memberRepository->get();
-        if($member == null) return null;
+        if(!$member) return;
         //檢查資料庫與目前密碼加密後是否相同
         $booleanValue = Hash::check($password,$member->password);
         if($booleanValue) return $member;
-        else return null;
+        else return;
     } 
     /**
      * 驗證
@@ -107,13 +107,14 @@ class MemberService
      * @param  mixed $verificationCode
      * @return void
      */
-    public function verify($memberId, $verificationCode){
-        $verificationCode = $this->verificationCodeService->getVerificationCodeByCode($memberId, $verificationCode);
-        if($verificationCode == null)  return null;
+    public function verify($memberId, $code){
+        $verificationCode = $this->verificationCodeService->getVerificationCodeByCode($memberId, $code);
+        if(!$verificationCode)  return;
         $verificationCode->status = Constants :: $STATUS_ENABLE;
         $this->verificationCodeService->update($verificationCode);
         $member = $this->getById($memberId);
-        if($member->verifyStatus == Constants :: $STATUS_ENABLE) return null;
+        if(!$member)  return;
+        if($member->verifyStatus == Constants :: $STATUS_ENABLE) return;
         $member->verifyStatus = Constants :: $STATUS_ENABLE;
         $this->memberRepository->upate($member);
         return $member;

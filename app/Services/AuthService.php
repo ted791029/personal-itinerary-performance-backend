@@ -15,12 +15,10 @@ class AuthService
 
 
     public function __construct(
-        MemberService $memberService, 
-        MemberTokenService $memberTokenService
+        MemberService $memberService
     )
     {
         $this->memberService = $memberService;
-        $this->memberTokenService = $memberTokenService;
     }
     
     /**
@@ -28,8 +26,7 @@ class AuthService
      */
     public function register(Request $request)
     {      
-        $member = $this->memberService->store($request);
-        return $this->memberTokenService->createToken($member->id);
+        return $this->memberService->store($request);
     }
     /**
      * 登入

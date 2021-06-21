@@ -10,12 +10,15 @@ use Illuminate\Support\Facades\Log;
 use App\Http\Resources\AuthResource;
 use App\Formatter\ResponseFormatter;
 use App\Formatter\ResponseCodeInfo;
+use App\Services\Log\LogService;
+use App\Services\Log\ActionSucessLogService;
 
 class AuthController extends Controller
 {   
     private $authService;
     private $authValidator;
     private $memberTokenService;
+    private $logService;
 
     public function __construct(
         AuthService $authService,
@@ -40,7 +43,13 @@ class AuthController extends Controller
     {
         $validate = $this->authValidator->register($request);
         if($validate != null) return $validate;
-        $dataJson = new AuthResource($this->authService->register($request));
+        $member = $this->authService->register($request);
+        if($member == null) return ResponseFormatter::jsonFormate("", ResponseCodeInfo::$RESPONSE_MEMBER_NOT_FIND_ERROR_CODE, ResponseCodeInfo::$RESPONSE_MEMBER_NOT_FIND_ERROR_MSG);
+        $token = $this->memberTokenService->createToken($member->id);
+        if($token == null) return ResponseFormatter::jsonFormate("", ResponseCodeInfo::$RESPONSE_TOKEN_ERROR_CODE, ResponseCodeInfo::$RESPONSE_TOKEN__ERROR_MSG);
+        $dataJson = new AuthResource($token);
+        $this->logService = new ActionSucessLogService('AuthController', $member->id, 'register');
+        $this->logService->printLog();
         return ResponseFormatter::jsonFormate($dataJson, ResponseCodeInfo::$RESPONSE_SUCESS_CODE, ResponseCodeInfo::$RESPONSE_SUCESS_MSG);
     }
     /**
@@ -70,6 +79,8 @@ class AuthController extends Controller
         //token 失效
         if($token == null) $token = $this->memberTokenService->createToken($member->id);
         $dataJson = new AuthResource($token);
+        $this->logService = new ActionSucessLogService('AuthController', $member->id, 'login');
+        $this->logService->printLog();
         return ResponseFormatter::jsonFormate($dataJson , ResponseCodeInfo::$RESPONSE_SUCESS_CODE, ResponseCodeInfo::$RESPONSE_SUCESS_MSG);
     }
 }

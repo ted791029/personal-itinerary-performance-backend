@@ -10,14 +10,21 @@ use App\Services\MemberService;
 use App\Validator\MemberValidator;
 use App\Services\MemberTokenService;
 use App\Http\Resources\VerificationCodeResource;
+use App\Services\Log\LogService;
+use App\Services\Log\ActionSucessLogService;
 
 class MemberController extends Controller
 {
     private $memberService;
     private $memberTokenService;
     private $memberValidator;
+    private $logService;
 
-    public function __construct(MemberService $memberService, MemberTokenService $memberTokenService, MemberValidator $memberValidator)
+    public function __construct(
+        MemberService $memberService,
+        MemberTokenService $memberTokenService,
+        MemberValidator $memberValidator
+    )
     {
         $this->memberService = $memberService;
         $this->memberTokenService = $memberTokenService;
@@ -50,7 +57,9 @@ class MemberController extends Controller
         if($validate != null) return $validate;
         $token = $this->memberTokenService->getToken($request->input('memberToken'));
         if(!$token) return ResponseFormatter::jsonFormate("", ResponseCodeInfo::$RESPONSE_TOKEN_ERROR_CODE, ResponseCodeInfo::$RESPONSE_TOKEN__ERROR_MSG);
-        $dataJson = new VerificationCodeResource($this->memberService->sendVerificationCode($token->memberId));
+        $verificationCode = $this->memberService->sendVerificationCode($token->memberId);
+        if(!$verificationCode) return ResponseFormatter::jsonFormate("", ResponseCodeInfo::$RESPONSE_MEMBER_NOT_FAILED_SEND_VERIFICATION_CODE_CODE, ResponseCodeInfo::$RESPONSE_MEMBER_NOT_FAILED_SEND_VERIFICATION_CODE_MSG);
+        $dataJson = new VerificationCodeResource($verificationCode);
         return ResponseFormatter::jsonFormate($dataJson, ResponseCodeInfo::$RESPONSE_SUCESS_CODE, ResponseCodeInfo::$RESPONSE_SUCESS_MSG);
     }
     
@@ -70,6 +79,8 @@ class MemberController extends Controller
         $member = $this->memberService->verify($token->memberId, $request->input('verificationCode'));
         if($member == null) return ResponseFormatter::jsonFormate("", ResponseCodeInfo::$RESPONSE_MEMBER_VERIFY_ERROR_CODE, ResponseCodeInfo::$RESPONSE_MEMBER_VERIFY_ERROR_MSG);
         $dataJson = new MmeberResource($member);
+        $this->logService = new ActionSucessLogService('MemberController', $member->id, 'verify');
+        $this->logService->printLog();
         return ResponseFormatter::jsonFormate($dataJson, ResponseCodeInfo::$RESPONSE_SUCESS_CODE, ResponseCodeInfo::$RESPONSE_SUCESS_MSG);
     }
 }
