@@ -12,6 +12,7 @@ use App\Repositories\MemberRepository;
 use App\Services\MemberService;
 use App\Models\Member;
 use App\Models\VerificationCode;
+use App\Formatter\Constants;
 
 use Tests\TestCase;
 
@@ -107,7 +108,7 @@ class MemberServiceTest extends TestCase
         $this->assertEquals($this->memberService->getByAccount($account), $returnData);
     }
     /**
-     * 寄驗證信-產生新的驗證碼，查無會員
+     * 寄驗證信-查無會員
      *
      * @param  mixed $request
      * @return void
@@ -116,6 +117,7 @@ class MemberServiceTest extends TestCase
     {
          /******建立需要的參數*******/
         $memberId = 1;
+        $type = Constants :: $MEMBER_VERIFICATION_CODE;
         $verificationCode = new VerificationCode();
         $verificationCode->id = 1;
         $verificationCode->memberId = 1;
@@ -129,31 +131,7 @@ class MemberServiceTest extends TestCase
         $this->verificationCodeServiceMock->shouldReceive('createVerificationCode')->andReturn($verificationCode);
         $this->memberRepositoryMock->shouldReceive('filterById');
         $this->memberRepositoryMock->shouldReceive('get')->andReturn(null);
-        $this->assertEquals($this->memberService->sendVerificationCode($memberId), $returnData);
-    }
-    /**
-     * 寄驗證信-取得舊的驗證碼，查無會員
-     *
-     * @param  mixed $request
-     * @return void
-     */
-    public function testSendVerificationCodeByGetOldVerificationCode()
-    {
-         /******建立需要的參數*******/
-        $memberId = 1;
-        $verificationCode = new VerificationCode();
-        $verificationCode->id = 1;
-        $verificationCode->memberId = 1;
-        $verificationCode->code = '123456';
-        $verificationCode->status = null;
-        $verificationCode->created_at = '2021-05-31 22:49:20';
-        $verificationCode->updated_at = '2021-05-31 22:49:20';
-        $returnData = null;
-        /******設定方法及回傳參數*******/
-        $this->verificationCodeServiceMock->shouldReceive('getVerificationCode')->andReturn($verificationCode);
-        $this->memberRepositoryMock->shouldReceive('filterById');
-        $this->memberRepositoryMock->shouldReceive('get')->andReturn(null);
-        $this->assertEquals($this->memberService->sendVerificationCode($memberId), $returnData);
+        $this->assertEquals($this->memberService->sendVerificationCode($memberId, $type), $returnData);
     }
     /**
      * 寄驗證信-會員沒有信箱
@@ -165,6 +143,7 @@ class MemberServiceTest extends TestCase
     {
          /******建立需要的參數*******/
         $memberId = 1;
+        $type = Constants :: $MEMBER_VERIFICATION_CODE;
         $verificationCode = new VerificationCode();
         $verificationCode->id = 1;
         $verificationCode->memberId = 1;
@@ -185,7 +164,7 @@ class MemberServiceTest extends TestCase
         $this->verificationCodeServiceMock->shouldReceive('getVerificationCode')->andReturn($verificationCode);
         $this->memberRepositoryMock->shouldReceive('filterById');
         $this->memberRepositoryMock->shouldReceive('get')->andReturn($member);
-        $this->assertEquals($this->memberService->sendVerificationCode($memberId), $returnData);
+        $this->assertEquals($this->memberService->sendVerificationCode($memberId, $type), $returnData);
     }
     /**
      * 寄驗證信-會員沒有姓名
@@ -197,6 +176,7 @@ class MemberServiceTest extends TestCase
     {
          /******建立需要的參數*******/
         $memberId = 1;
+        $type = Constants :: $MEMBER_VERIFICATION_CODE;
         $verificationCode = new VerificationCode();
         $verificationCode->id = 1;
         $verificationCode->memberId = 1;
@@ -217,7 +197,7 @@ class MemberServiceTest extends TestCase
         $this->verificationCodeServiceMock->shouldReceive('getVerificationCode')->andReturn($verificationCode);
         $this->memberRepositoryMock->shouldReceive('filterById');
         $this->memberRepositoryMock->shouldReceive('get')->andReturn($member);
-        $this->assertEquals($this->memberService->sendVerificationCode($memberId), $returnData);
+        $this->assertEquals($this->memberService->sendVerificationCode($memberId, $type), $returnData);
     }
 
     /**
@@ -230,6 +210,7 @@ class MemberServiceTest extends TestCase
     {
          /******建立需要的參數*******/
         $memberId = 1;
+        $type = Constants :: $MEMBER_VERIFICATION_CODE;
         $verificationCode = new VerificationCode();
         $verificationCode->id = 1;
         $verificationCode->memberId = 1;
@@ -250,7 +231,7 @@ class MemberServiceTest extends TestCase
         $this->verificationCodeServiceMock->shouldReceive('getVerificationCode')->andReturn($verificationCode);
         $this->memberRepositoryMock->shouldReceive('filterById');
         $this->memberRepositoryMock->shouldReceive('get')->andReturn($member);
-        $this->assertEquals($this->memberService->sendVerificationCode($memberId), $returnData);
+        $this->assertEquals($this->memberService->sendVerificationCode($memberId, $type), $returnData);
     }
     /**
      * 寄驗證信-成功
@@ -262,11 +243,13 @@ class MemberServiceTest extends TestCase
     {
          /******建立需要的參數*******/
         $memberId = 1;
+        $type = Constants :: $MEMBER_VERIFICATION_CODE;
         $verificationCode = new VerificationCode();
         $verificationCode->id = 1;
         $verificationCode->memberId = 1;
         $verificationCode->code = '123456';
         $verificationCode->status = null;
+        $verificationCode->type = '001';
         $verificationCode->created_at = '2021-05-31 22:49:20';
         $verificationCode->updated_at = '2021-05-31 22:49:20';
         $member = new Member();
@@ -283,7 +266,7 @@ class MemberServiceTest extends TestCase
         $this->memberRepositoryMock->shouldReceive('filterById');
         $this->memberRepositoryMock->shouldReceive('get')->andReturn($member);
         $this->mailServiceMock->shouldReceive('send');
-        $this->assertEquals($this->memberService->sendVerificationCode($memberId), $returnData);
+        $this->assertEquals($this->memberService->sendVerificationCode($memberId, $type), $returnData);
     }
     /**
      * 驗證-驗證碼錯誤
@@ -295,6 +278,7 @@ class MemberServiceTest extends TestCase
     {
         /******建立需要的參數*******/
         $memberId = 1;
+        $type = Constants :: $MEMBER_VERIFICATION_CODE;
         $code = '123456';
         $member = new Member();
         $member->id = 1;
@@ -307,7 +291,7 @@ class MemberServiceTest extends TestCase
         $returnData = null;
         /******設定方法及回傳參數*******/
         $this->verificationCodeServiceMock->shouldReceive('getVerificationCodeByCode')->andReturn(null);
-        $this->assertEquals($this->memberService->verify($memberId, $code), $returnData);
+        $this->assertEquals($this->memberService->verify($memberId, $code, $type), $returnData);
     }
     /**
      * 驗證-查無會員
@@ -320,11 +304,13 @@ class MemberServiceTest extends TestCase
         /******建立需要的參數*******/
         $memberId = 1;
         $code = '123456';
+        $type = Constants :: $MEMBER_VERIFICATION_CODE;
         $verificationCode = new VerificationCode();
         $verificationCode->id = 1;
         $verificationCode->memberId = 1;
         $verificationCode->code = '123456';
         $verificationCode->status = null;
+        $verificationCode->type = '001';
         $verificationCode->created_at = '2021-05-31 22:49:20';
         $verificationCode->updated_at = '2021-05-31 22:49:20';
         $returnData = null;
@@ -333,7 +319,7 @@ class MemberServiceTest extends TestCase
         $this->verificationCodeServiceMock->shouldReceive('update');
         $this->memberRepositoryMock->shouldReceive('filterById');
         $this->memberRepositoryMock->shouldReceive('get')->andReturn(null);
-        $this->assertEquals($this->memberService->verify($memberId, $code), $returnData);
+        $this->assertEquals($this->memberService->verify($memberId, $code, $type), $returnData);
     }
     /**
      * 驗證-會員已驗證
@@ -346,11 +332,13 @@ class MemberServiceTest extends TestCase
         /******建立需要的參數*******/
         $memberId = 1;
         $code = '123456';
+        $type = Constants :: $MEMBER_VERIFICATION_CODE;
         $verificationCode = new VerificationCode();
         $verificationCode->id = 1;
         $verificationCode->memberId = 1;
         $verificationCode->code = '123456';
         $verificationCode->status = null;
+        $verificationCode->type = '001';
         $verificationCode->created_at = '2021-05-31 22:49:20';
         $verificationCode->updated_at = '2021-05-31 22:49:20';
         $member = new Member();
@@ -367,7 +355,7 @@ class MemberServiceTest extends TestCase
         $this->verificationCodeServiceMock->shouldReceive('update');
         $this->memberRepositoryMock->shouldReceive('filterById');
         $this->memberRepositoryMock->shouldReceive('get')->andReturn($member);
-        $this->assertEquals($this->memberService->verify($memberId, $code), $returnData);
+        $this->assertEquals($this->memberService->verify($memberId, $code, $type), $returnData);
     }
     /**
      * 驗證-成功
@@ -380,11 +368,13 @@ class MemberServiceTest extends TestCase
         /******建立需要的參數*******/
         $memberId = 1;
         $code = '123456';
+        $type = Constants :: $MEMBER_VERIFICATION_CODE;
         $verificationCode = new VerificationCode();
         $verificationCode->id = 1;
         $verificationCode->memberId = 1;
         $verificationCode->code = '123456';
         $verificationCode->status = null;
+        $verificationCode->type = '001';
         $verificationCode->created_at = '2021-05-31 22:49:20';
         $verificationCode->updated_at = '2021-05-31 22:49:20';
         $member = new Member();
@@ -402,6 +392,6 @@ class MemberServiceTest extends TestCase
         $this->memberRepositoryMock->shouldReceive('filterById');
         $this->memberRepositoryMock->shouldReceive('get')->andReturn($member);
         $this->memberRepositoryMock->shouldReceive('upate');
-        $this->assertEquals($this->memberService->verify($memberId, $code), $returnData);
+        $this->assertEquals($this->memberService->verify($memberId, $code, $type), $returnData);
     }
 }

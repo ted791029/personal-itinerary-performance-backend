@@ -72,14 +72,14 @@ class MemberService
      * @param  mixed $request
      * @return void
      */
-    public function sendVerificationCode($memberId){
-        $verificationCode = $this->verificationCodeService->getVerificationCode($memberId);
-        if(!$verificationCode) $verificationCode =  $this->verificationCodeService->createVerificationCode($memberId);
+    public function sendVerificationCode($memberId, $type){
+        $verificationCode = $this->verificationCodeService->getVerificationCode($memberId, $type);
+        if(!$verificationCode) $verificationCode =  $this->verificationCodeService->createVerificationCode($memberId, $type);
         $member = $this->getById($memberId);
         if(!$member) return;
         $email = $member->account;
         $name = $member->name;
-        if(!$email|| !$name) return;
+        if(!$email || !$name) return;
         $code = $verificationCode->code;
         if(!$code) return;
         $this->mailService->send($email, new VerificationCodeMail($name, $code));
@@ -107,8 +107,8 @@ class MemberService
      * @param  mixed $verificationCode
      * @return void
      */
-    public function verify($memberId, $code){
-        $verificationCode = $this->verificationCodeService->getVerificationCodeByCode($memberId, $code);
+    public function verify($memberId, $code, $type){
+        $verificationCode = $this->verificationCodeService->getVerificationCodeByCode($memberId, $code, $type);
         if(!$verificationCode)  return;
         $verificationCode->status = Constants :: $STATUS_ENABLE;
         $this->verificationCodeService->update($verificationCode);

@@ -17,5 +17,6 @@ class VerificationCode extends Model
     protected $fillable = [
         'memberId',
         'code',
+        'type'
     ];
 }

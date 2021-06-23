@@ -18,6 +18,7 @@ class VerificationCodeResource extends JsonResource
             'memberId' => $this->memberId,
             'code' => $this->code,
             'status' => $this->status,
+            'type' => $this->type,
         ];
     }
 }

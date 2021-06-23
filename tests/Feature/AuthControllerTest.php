@@ -15,6 +15,8 @@ use Illuminate\Http\Request;
 use App\Models\Member;
 use App\Http\Resources\AuthResource;
 use App\Models\MemberToken;
+use App\Models\VerificationCode;
+use App\Http\Resources\VerificationCodeResource;
 
 class AuthControllerTest extends TestCase
 {
@@ -176,7 +178,6 @@ class AuthControllerTest extends TestCase
         $this->memberTokenServiceMock->shouldReceive('createToken')->andReturn($memberToken);
         $this->assertEquals($this->authController->register($request), $returnData);
     }
-
     /**
      * 登入-驗證未過
      *
@@ -195,7 +196,6 @@ class AuthControllerTest extends TestCase
         $this->authValidatorMock->shouldReceive('login')->andReturn($returnData);
         $this->assertEquals($this->authController->login($request), $returnData);
     }
-
     /**
      * 登入-找不到
      *
@@ -223,7 +223,6 @@ class AuthControllerTest extends TestCase
         $this->authServiceMock->shouldReceive('login')->andReturn(null);
         $this->assertEquals($this->authController->login($request), $returnData);
     }
-
     /**
      * 登入-成功
      *
@@ -258,5 +257,132 @@ class AuthControllerTest extends TestCase
         $this->authServiceMock->shouldReceive('login')->andReturn($member);
         $this->memberTokenServiceMock->shouldReceive('getTokenByMemberId')->andReturn($memberToken);
         $this->assertEquals($this->authController->login($request), $returnData);
+    }
+    /**
+     * 寄忘記密碼驗證信-驗證未過
+     *
+     * @return void
+    */
+    public function testSendForgetPasswordVerificationCodeByFailedVerification()
+    {
+        /******建立需要的參數*******/
+        $request = Request::create('/api/Auth/sendForgetPasswordVerificationCode', 'POST', array(
+            'account'  => null,
+       ));
+        $returnData = ResponseFormatter::jsonFormate("", ResponseCodeInfo::$RESPONSE_PARAM_ERROR_CODE, ResponseCodeInfo::$RESPONSE_PARAM_ERROR_MSG);
+        //validator 回傳什麼 controller 就回傳什麼
+        /******設定方法及回傳參數*******/
+        $this->authValidatorMock->shouldReceive('sendForgetPasswordVerificationCode')->andReturn($returnData);
+        $this->assertEquals($this->authController->sendForgetPasswordVerificationCode($request), $returnData);
+    }
+    /**
+     * 寄忘記密碼驗證信-無法寄信
+     *
+     * @return void
+    */
+    public function testSendForgetPasswordVerificationCodeByFailedSend()
+    {
+        /******建立需要的參數*******/
+        $request = Request::create('/api/Auth/sendForgetPasswordVerificationCode', 'POST', array(
+            'account'  => 'test@gmail.com',
+        ));
+        $returnData = ResponseFormatter::jsonFormate("", ResponseCodeInfo::$RESPONSE_NOT_FAILED_SEND_VERIFICATION_CODE_CODE, ResponseCodeInfo::$RESPONSE_NOT_FAILED_SEND_VERIFICATION_CODE_MSG);
+        //validator 回傳什麼 controller 就回傳什麼
+        /******設定方法及回傳參數*******/
+        $this->authValidatorMock->shouldReceive('sendForgetPasswordVerificationCode')->andReturn(null);
+        $this->authServiceMock->shouldReceive('sendForgetPasswordVerificationCode')->andReturn(null);
+        $this->assertEquals($this->authController->sendForgetPasswordVerificationCode($request), $returnData);
+    }
+    /**
+     * 寄忘記密碼驗證信-成功
+     *
+     * @return void
+    */
+    public function testSendForgetPasswordVerificationCodeBySucess()
+    {
+        /******建立需要的參數*******/
+        $request = Request::create('/api/Auth/sendForgetPasswordVerificationCode', 'POST', array(
+            'account'  => 'test@gmail.com',
+        ));
+        $verificationCode = new VerificationCode();
+        $verificationCode->id = 1;
+        $verificationCode->memberId = 1;
+        $verificationCode->code = '123456';
+        $verificationCode->status = null;
+        $verificationCode->type = '001';
+        $verificationCode->created_at = '2021-05-31 22:49:20';
+        $verificationCode->updated_at = '2021-05-31 22:49:20';
+        $dataJson = new VerificationCodeResource($verificationCode);
+        $returnData = ResponseFormatter::jsonFormate($dataJson, ResponseCodeInfo::$RESPONSE_SUCESS_CODE, ResponseCodeInfo::$RESPONSE_SUCESS_MSG);
+        //validator 回傳什麼 controller 就回傳什麼
+        /******設定方法及回傳參數*******/
+        $this->authValidatorMock->shouldReceive('sendForgetPasswordVerificationCode')->andReturn(null);
+        $this->authServiceMock->shouldReceive('sendForgetPasswordVerificationCode')->andReturn($verificationCode);
+        $this->assertEquals($this->authController->sendForgetPasswordVerificationCode($request), $returnData);
+    }
+    /**
+     * 忘記密碼的驗證碼是否存在-檢驗未過
+     *
+     * @return void
+    */
+    public function testForgetPasswordVerificationCodeIsExitByFailedVerification()
+    {
+        /******建立需要的參數*******/
+        $request = Request::create('/api/Auth/sendForgetPasswordVerificationCode', 'POST', array(
+            'account'  => 'test@gmail.com',
+            'verificationCode' => null,
+        ));
+        $returnData = ResponseFormatter::jsonFormate("", ResponseCodeInfo::$RESPONSE_PARAM_ERROR_CODE, ResponseCodeInfo::$RESPONSE_PARAM_ERROR_MSG);
+        //validator 回傳什麼 controller 就回傳什麼
+        /******設定方法及回傳參數*******/
+        $this->authValidatorMock->shouldReceive('forgetPasswordVerificationCodeIsExit')->andReturn($returnData);
+        $this->assertEquals($this->authController->forgetPasswordVerificationCodeIsExit($request), $returnData);
+    }
+    /**
+     * 忘記密碼的驗證碼是否存在-無效檢驗碼
+     *
+     * @return void
+    */
+    public function testForgetPasswordVerificationCodeIsExitByVerificationCodeError()
+    {
+        /******建立需要的參數*******/
+        $request = Request::create('/api/Auth/sendForgetPasswordVerificationCode', 'POST', array(
+            'account'  => 'test@gmail.com',
+            'verificationCode' => '123456',
+        ));
+        $returnData = ResponseFormatter::jsonFormate("", ResponseCodeInfo::$RESPONSE_MEMBER_VERIFY_ERROR_CODE, ResponseCodeInfo::$RESPONSE_MEMBER_VERIFY_ERROR_MSG);
+        //validator 回傳什麼 controller 就回傳什麼
+        /******設定方法及回傳參數*******/
+        $this->authValidatorMock->shouldReceive('forgetPasswordVerificationCodeIsExit')->andReturn(null);
+        $this->authServiceMock->shouldReceive('forgetPasswordVerificationCodeIsExit')->andReturn(null);
+        $this->assertEquals($this->authController->forgetPasswordVerificationCodeIsExit($request), $returnData);
+    }
+    /**
+     * 忘記密碼的驗證碼是否存在-成功
+     *
+     * @return void
+    */
+    public function testForgetPasswordVerificationCodeIsExitBySucess()
+    {
+        /******建立需要的參數*******/
+        $request = Request::create('/api/Auth/sendForgetPasswordVerificationCode', 'POST', array(
+            'account'  => 'test@gmail.com',
+            'verificationCode' => '123456',
+        ));
+        $verificationCode = new VerificationCode();
+        $verificationCode->id = 1;
+        $verificationCode->memberId = 1;
+        $verificationCode->code = '123456';
+        $verificationCode->status = null;
+        $verificationCode->type = '001';
+        $verificationCode->created_at = '2021-05-31 22:49:20';
+        $verificationCode->updated_at = '2021-05-31 22:49:20';
+        $dataJson = new VerificationCodeResource($verificationCode);
+        $returnData = ResponseFormatter::jsonFormate($dataJson, ResponseCodeInfo::$RESPONSE_SUCESS_CODE, ResponseCodeInfo::$RESPONSE_SUCESS_MSG);
+        //validator 回傳什麼 controller 就回傳什麼
+        /******設定方法及回傳參數*******/
+        $this->authValidatorMock->shouldReceive('forgetPasswordVerificationCodeIsExit')->andReturn(null);
+        $this->authServiceMock->shouldReceive('forgetPasswordVerificationCodeIsExit')->andReturn($verificationCode);
+        $this->assertEquals($this->authController->forgetPasswordVerificationCodeIsExit($request), $returnData);
     }
 }

@@ -42,4 +42,32 @@ class AuthValidator extends Validator
         $inputValidate = parent::validateInputs($request, $keys);
         if($inputValidate != null) return $inputValidate;
     }
+    /**
+     * 寄忘記密碼驗證信驗證
+     *
+     * @param  mixed $request
+     * @return void
+     */
+    public function sendForgetPasswordVerificationCode(Request $request){
+        $keys = ['account'];
+        $inputValidate = parent::validateInputs($request, $keys);
+        if($inputValidate != null) return $inputValidate;
+        $account = $request->input('account');
+        $member = $this->memberService->getByAccount($account);
+        if($member == null) return ResponseFormatter::jsonFormate("", ResponseCodeInfo::$RESPONSE_MEMBER_NOT_FIND_ERROR_CODE, ResponseCodeInfo::$RESPONSE_MEMBER_NOT_FIND_ERROR_MSG);
+    }
+    /**
+     * 檢查忘記密碼驗證碼驗證
+     *
+     * @param  mixed $request
+     * @return void
+     */
+    public function forgetPasswordVerificationCodeIsExit(Request $request){
+        $keys = ['account', 'verificationCode'];
+        $inputValidate = parent::validateInputs($request, $keys);
+        if($inputValidate != null) return $inputValidate;
+        $account = $request->input('account');
+        $member = $this->memberService->getByAccount($account);
+        if($member == null) return ResponseFormatter::jsonFormate("", ResponseCodeInfo::$RESPONSE_MEMBER_NOT_FIND_ERROR_CODE, ResponseCodeInfo::$RESPONSE_MEMBER_NOT_FIND_ERROR_MSG);
+    }
 }

@@ -18,6 +18,8 @@ Route::group(['prefix' =>'Auth', 'namespace' => 'App\Http\Controllers'], functio
     Route::get('/isAccountExit/{account}', 'AuthController@isAccountExit');
     Route::post('/register', 'AuthController@register');
     Route::post('/login', 'AuthController@login');
+    Route::post('/sendForgetPasswordVerificationCode', 'AuthController@sendForgetPasswordVerificationCode');
+    Route::post('/forgetPasswordVerificationCodeIsExit', 'AuthController@forgetPasswordVerificationCodeIsExit');
 });
 
 Route::group(['prefix' =>'Member', 'namespace' => 'App\Http\Controllers'], function(){

@@ -87,4 +87,11 @@ class VerificationCodeRepository
     {   
         $this->db->where('code', $code);
     }
+    /**
+     *增加 型態條件
+     */
+    public function filterByType($type)
+    {   
+        $this->db->where('type', $type);
+    }
 }

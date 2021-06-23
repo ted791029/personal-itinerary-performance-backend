@@ -50,7 +50,6 @@ class MemberControllerTest extends TestCase
         $this->memberTokenServiceMock->shouldReceive('getToken')->andReturn(null);
         $this->assertEquals($this->memberController->getByToken($memberToken), $returnData);
     }
-
     /**
      * 依照token 取得會員-成功
      *
@@ -81,8 +80,7 @@ class MemberControllerTest extends TestCase
         $this->memberTokenServiceMock->shouldReceive('getToken')->andReturn($memberToken);
         $this->memberServiceMock->shouldReceive('getById')->andReturn($member);
         $this->assertEquals($this->memberController->getByToken($token), $returnData);
-    }
-        
+    }        
     /**
      * 寄驗證信-檢驗失敗
      *
@@ -99,7 +97,6 @@ class MemberControllerTest extends TestCase
         $this->memberValidatorMock->shouldReceive('sendVerificationCode')->andReturn($returnData);
         $this->assertEquals($this->memberController->sendVerificationCode($request), $returnData);
     }
-
     /**
      * 寄驗證信-無效toekn
      *
@@ -117,7 +114,6 @@ class MemberControllerTest extends TestCase
         $this->memberTokenServiceMock->shouldReceive('getToken')->andReturn(null);
         $this->assertEquals($this->memberController->sendVerificationCode($request), $returnData);
     }
-
     /**
      * 寄驗證信-無法寄出
      *
@@ -135,14 +131,13 @@ class MemberControllerTest extends TestCase
         $memberToken->expiryTime = '2021-06-10 22:49:20';
         $memberToken->created_at = '2021-05-31 22:49:20';
         $memberToken->updated_at = '2021-05-31 22:49:20';
-        $returnData = ResponseFormatter::jsonFormate("", ResponseCodeInfo::$RESPONSE_MEMBER_NOT_FAILED_SEND_VERIFICATION_CODE_CODE, ResponseCodeInfo::$RESPONSE_MEMBER_NOT_FAILED_SEND_VERIFICATION_CODE_MSG);
+        $returnData = ResponseFormatter::jsonFormate("", ResponseCodeInfo::$RESPONSE_NOT_FAILED_SEND_VERIFICATION_CODE_CODE, ResponseCodeInfo::$RESPONSE_NOT_FAILED_SEND_VERIFICATION_CODE_MSG);
         /******設定方法及回傳參數*******/
         $this->memberValidatorMock->shouldReceive('sendVerificationCode')->andReturn(null);
         $this->memberTokenServiceMock->shouldReceive('getToken')->andReturn($memberToken);
         $this->memberServiceMock->shouldReceive('sendVerificationCode')->andReturn(null);
         $this->assertEquals($this->memberController->sendVerificationCode($request), $returnData);
     }
-
     /**
      * 寄驗證信-成功
      *
@@ -165,6 +160,7 @@ class MemberControllerTest extends TestCase
         $verificationCode->memberId = 1;
         $verificationCode->code = '123456';
         $verificationCode->status = null;
+        $verificationCode->type = '001';
         $verificationCode->created_at = '2021-05-31 22:49:20';
         $verificationCode->updated_at = '2021-05-31 22:49:20';
         $dataJson = new VerificationCodeResource($verificationCode);
@@ -175,7 +171,6 @@ class MemberControllerTest extends TestCase
         $this->memberServiceMock->shouldReceive('sendVerificationCode')->andReturn($verificationCode);
         $this->assertEquals($this->memberController->sendVerificationCode($request), $returnData);
     }
-
     /**
      * 驗證-驗證失敗
      *
@@ -193,7 +188,6 @@ class MemberControllerTest extends TestCase
         $this->memberValidatorMock->shouldReceive('verify')->andReturn($returnData);
         $this->assertEquals($this->memberController->verify($request), $returnData);
     }
-
     /**
      * 驗證-無效token
      *
@@ -212,7 +206,6 @@ class MemberControllerTest extends TestCase
         $this->memberTokenServiceMock->shouldReceive('getToken')->andReturn(null);
         $this->assertEquals($this->memberController->verify($request), $returnData);
     }
-
     /**
      * 驗證-查無會員
      *
@@ -238,7 +231,6 @@ class MemberControllerTest extends TestCase
         $this->memberServiceMock->shouldReceive('verify')->andReturn(null);
         $this->assertEquals($this->memberController->verify($request), $returnData);
     }
-
     /**
      * 驗證-驗證成功
      *

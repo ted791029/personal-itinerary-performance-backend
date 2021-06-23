@@ -21,13 +21,14 @@ class VerificationCodeService
      * @param  mixed $request
      * @return void
      */
-    public function getVerificationCode($memberId)
+    public function getVerificationCode($memberId, $type)
     {
         $unixtime = strtotime("- 10 minutes");
         $time = Carbon::createFromTimeStamp($unixtime);
         $this->verificationCodeRepository->filterByMemberId($memberId);
         $this->verificationCodeRepository->filterByCreated($time, '>');
         $this->verificationCodeRepository->filterByStatus(Constants::$STATUS_DISABLE);
+        $this->verificationCodeRepository->filterByType($type);
         return $this->verificationCodeRepository->get();
     }
     /**
@@ -35,7 +36,7 @@ class VerificationCodeService
      * @param  mixed $request
      * @return void
      */
-    public function getVerificationCodeByCode($memberId, $code)
+    public function getVerificationCodeByCode($memberId, $code, $type)
     {
         $unixtime = strtotime("- 10 minutes");
         $time = Carbon::createFromTimeStamp($unixtime);
@@ -43,6 +44,7 @@ class VerificationCodeService
         $this->verificationCodeRepository->filterByCode($code);
         $this->verificationCodeRepository->filterByCreated($time, '>');
         $this->verificationCodeRepository->filterByStatus(Constants::$STATUS_DISABLE);
+        $this->verificationCodeRepository->filterByType($type);
         return $this->verificationCodeRepository->get();
     }
     /**
@@ -51,12 +53,13 @@ class VerificationCodeService
      * @param  mixed $request
      * @return void
      */
-    public function createVerificationCode($memberId)
+    public function createVerificationCode($memberId, $type)
     {
         $codeSize = 6;
         $code = $this->randomkeys($codeSize);
         $verificationCodeInput['memberId'] = $memberId;
         $verificationCodeInput['code'] = $code;
+        $verificationCodeInput['type'] = $type;
         return $this->verificationCodeRepository->store($verificationCodeInput);
     }    
     /**
